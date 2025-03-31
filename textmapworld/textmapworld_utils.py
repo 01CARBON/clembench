@@ -122,6 +122,8 @@ def get_directions(node, direction_list, saved_node):
 
 def get_directions_main(node, direction_list, saved_node, graph_type):
 
+    print(f"Node: {node}, \nDirection list: {direction_list}, \nsaved_node: {saved_node}, \ngraph_type: {graph_type}")
+
     if saved_node != node:
         node = saved_node
     node_directions = None  
@@ -134,6 +136,7 @@ def get_directions_main(node, direction_list, saved_node, graph_type):
             if i[0]==node:
                 node_directions=i[1]
                 break
+    print(f"\n Node Directions : {node_directions}")
     return node_directions
 
 def string_available_directions(word_list):
