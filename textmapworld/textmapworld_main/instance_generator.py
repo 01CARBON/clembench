@@ -7,8 +7,7 @@ import os
 
 import random
 
-sys.path.append(os.path.abspath('../clemgames/textmapworld'))
-from textmapworld_utils import load_check_graph, generate_filename, create_graphs_file
+from textmapworld.textmapworld_utils import load_check_graph, generate_filename, create_graphs_file
 
 
 
@@ -18,7 +17,7 @@ from textmapworld_utils import load_check_graph, generate_filename, create_graph
 SEED = 42
 
 strict = True
-create_new_graphs = False # True or False   !if True, the graphs will be created again, threfore pay attention!
+create_new_graphs = True # True or False   !if True, the graphs will be created again, threfore pay attention!
 n = 4
 m = 4
 instance_number = 10
@@ -35,16 +34,16 @@ else:
     
 loop_reminder = False
 max_turns_reminder = False
-experiments = {"small": (4,"cycle_false"), "medium": (6, "cycle_false"), "large": (8, "cycle_false"), "medium_cycle": (6, "cycle_true"), "large_cycle": (8, "cycle_true")}
+experiments = {"small": (5,"cycle_false"), "medium": (7, "cycle_false"), "large": (9, "cycle_false"), "medium_cycle": (7, "cycle_true"), "large_cycle": (9, "cycle_true")}
 
 "°°°°°°°imported parameters°°°°°°°"
 prompt_file_name = 'PromptNamedGame.template' if game_type == "named_graph" else 'PromptUnnamedGame.template'
 prompt_file_name = os.path.join('resources', 'initial_prompts', prompt_file_name)
 game_name = "textmapworld_main"
 
-with open(os.path.join('..', 'clemgames', 'textmapworld', game_name, 'resources', 'initial_prompts', "answers.json")) as json_file:
+with open(os.path.join('..', 'clembench', 'textmapworld', game_name, 'resources', 'initial_prompts', "answers.json")) as json_file:
     answers_file = json.load(json_file)
-with open(os.path.join('..', 'clemgames', 'textmapworld', game_name, 'resources', 'initial_prompts', "reminders.json")) as json_file:
+with open(os.path.join('..', 'clembench', 'textmapworld', game_name, 'resources', 'initial_prompts', "reminders.json")) as json_file:
     reminders_file = json.load(json_file)
 "-------------------------------------------------------------------------------------------------------------"
 
@@ -66,13 +65,14 @@ class GraphGameInstanceGenerator(GameInstanceGenerator):
             experiment = self.add_experiment(key)
             size, cycle_type = value
             created_name= generate_filename(game_type, size, cycle_type, ambiguity)
-            file_graphs = os.path.join('..', 'clemgames', 'textmapworld', game_name, 'files', created_name)
+            file_graphs = os.path.join('..', 'clembench', 'textmapworld', game_name, 'files', created_name)
+            print(file_graphs)
             if not create_new_graphs:
                 if not os.path.exists(file_graphs):
                     raise ValueError("New graphs are not created, but the file does not exist. Please set create_new_graphs to True.")
             else:
-                if os.path.exists(file_graphs):
-                    raise ValueError("The file already exists, please set create_new_graphs to False.")
+                # if os.path.exists(file_graphs):
+                    # raise ValueError("The file already exists, please set create_new_graphs to False.")
                 create_graphs_file(file_graphs, instance_number, game_type, n, m, size, cycle_type, ambiguity, game_name)
 
             if os.path.exists(file_graphs):
