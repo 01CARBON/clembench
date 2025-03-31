@@ -55,6 +55,20 @@ def generate_result_file(graph_metadata: dict, G, **kwargs) -> dict:
     Return:
         result: A dict containing graph metadata
     """
+    graph_dirs = graph_metadata["directions"]
+    dir_list = []
+    for k in graph_dirs.keys():
+        dir_list.append((k, graph_dirs[k]))
+
+    graph_moves = graph_metadata["moves"]
+    moves_list = []
+    for k in graph_moves.keys():
+        moves_list.append(
+            {
+                "node": k,
+                "node_moves": graph_moves[k]
+            }
+        )
 
     results_dict = {
         "Picture_Name": "graph_" + graph_metadata['graph_id'] + ".png",
@@ -64,8 +78,8 @@ def generate_result_file(graph_metadata: dict, G, **kwargs) -> dict:
         "Graph_Edges": graph_metadata["graph_edges"],
         "N_edges": len(graph_metadata["graph_edges"]),
         "Initial_Position": np.random.choice(graph_metadata["graph_nodes"]),
-        "Directions": graph_metadata["directions"],
-        "Moves": graph_metadata["moves"],
+        "Directions": dir_list,
+        "Moves": moves_list,
         "Cycle": kwargs.get("cycle_bool", None),
         "Ambiguity": kwargs.get("ambiguity", None),
         "Mapping": graph_metadata['mapping']
