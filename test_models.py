@@ -106,3 +106,16 @@ print(f'User: {question}\nAssistant: {response}')
 question = '<image>\nPlease describe the image shortly.'
 response = model.chat(tokenizer, pixel_values, question, generation_config)
 print(f'User: {question}\nAssistant: {response}')
+
+
+
+
+{'graph_id': '21r22w32p33k23w13c03g02c12b11b', 
+ 'm': 4, 
+ 'n': 4, 
+ 'graph_nodes': ['Restroom outdoor', 'Wine cellar bottle storage', 'Parlor', 'Kitchen', 'Waiting room', 'Computer room', 'Game room', 'Corridor', 'Basement', 'Bistro outdoor'], 
+ 'graph_edges': [('Restroom outdoor', 'Wine cellar bottle storage'), ('Wine cellar bottle storage', 'Parlor'), ('Parlor', 'Kitchen'), ('Kitchen', 'Waiting room'), ('Waiting room', 'Computer room'), ('Computer room', 'Game room'), ('Game room', 'Corridor'), ('Corridor', 'Basement'), ('Basement', 'Bistro outdoor')], 
+ 'directions': {'Restroom outdoor': ['north'], 'Wine cellar bottle storage': ['south', 'east'], 'Parlor': ['west', 'north'], 'Kitchen': ['south', 'west'], 'Waiting room': ['east', 'west'], 'Computer room': ['east', 'west'], 'Game room': ['east', 'south'], 'Corridor': ['north', 'east'], 'Basement': ['west', 'south'], 'Bistro outdoor': ['north']}, 
+ 'moves': {'Restroom outdoor': [('north', 'Wine cellar bottle storage')], 'Wine cellar bottle storage': [('south', 'Restroom outdoor'), ('east', 'Parlor')], 'Parlor': [('west', 'Wine cellar bottle storage'), ('north', 'Kitchen')], 'Kitchen': [('south', 'Parlor'), ('west', 'Waiting room')], 'Waiting room': [('east', 'Kitchen'), ('west', 'Computer room')], 'Computer room': [('east', 'Waiting room'), ('west', 'Game room')], 'Game room': [('east', 'Computer room'), ('south', 'Corridor')], 'Corridor': [('north', 'Game room'), ('east', 'Basement')], 'Basement': [('west', 'Corridor'), ('south', 'Bistro outdoor')], 'Bistro outdoor': [('north', 'Basement')]}, 
+ 'mapping': {(2, 1): 'Restroom outdoor', (2, 2): 'Wine cellar bottle storage', (3, 2): 'Parlor', (3, 3): 'Kitchen', (2, 3): 'Waiting room', (1, 3): 'Computer room', (0, 3): 'Game room', (0, 2): 'Corridor', (1, 2): 'Basement', (1, 1): 'Bistro outdoor'}
+}
