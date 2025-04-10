@@ -2,7 +2,9 @@ import ast
 import os
 import random
 import networkx as nx
+import numpy as np
 from graph_generator import GraphGenerator
+from mapworld.ade_maps import ADEMap
 
 "----------------------------------------------------"
 "The functions used in instance_generator.py"
@@ -43,6 +45,51 @@ def load_check_graph(file_graphs, instance_number, game_type):
     return grids
 
 
+def generate_result_file(graph_metadata: dict, G, **kwargs) -> dict:
+    """
+    Create textmapworld compatible results file instance (ref textmapworld/textmapworld_main/files/*.txt)
+
+    Args:
+        graph_metadata: A dictionary representing the graph definitions liek edges, nodes, n_rooms, .
+
+    Return:
+        result: A dict containing graph metadata
+    """
+    graph_dirs = graph_metadata["directions"]
+    dir_list = []
+    for k in graph_dirs.keys():
+        dir_list.append((k, graph_dirs[k]))
+
+    graph_moves = graph_metadata["moves"]
+    moves_list = []
+    for k in graph_moves.keys():
+        moves_list.append(
+            {
+                "node": k,
+                "node_moves": graph_moves[k]
+            }
+        )
+
+    results_dict = {
+        "Picture_Name": "graph_" + graph_metadata['graph_id'] + ".png",
+        "Graph_Type": kwargs.get("graph_type", None),
+        "Grid_Dimension": graph_metadata['m'], # m=n for textmapworld
+        "Graph_Nodes": graph_metadata["graph_nodes"],
+        "Graph_Edges": graph_metadata["graph_edges"],
+        "N_edges": len(graph_metadata["graph_edges"]),
+        "Initial_Position": np.random.choice(graph_metadata["graph_nodes"]),
+        "Directions": dir_list,
+        "Moves": moves_list,
+        "Cycle": kwargs.get("cycle_bool", None),
+        "Ambiguity": kwargs.get("ambiguity", None),
+        "Mapping": graph_metadata['mapping']
+    }
+
+    print(f"Graph_type - {results_dict['Graph_Type']}")
+
+    return results_dict
+
+
 
 def create_graphs_file(graphs_file_name, num_graphs, graph_type, n, m, rooms, cycle_bool, abiguity, game_name):
     
@@ -50,9 +97,22 @@ def create_graphs_file(graphs_file_name, num_graphs, graph_type, n, m, rooms, cy
     with open(graphs_file_name, "w") as f:
         file_length = os.path.getsize(graphs_file_name)
         while generated_graphs < num_graphs:
-            new_instance = GraphGenerator(graph_type, n, m, rooms, cycle_bool, abiguity, game_name)
-            result = new_instance.generate_instance()
-            if result != "No graph generated":
+            # new_instance = GraphGenerator(graph_type, n, m, rooms, cycle_bool, abiguity, game_name)
+            # result = new_instance.generate_instance()
+
+            ade_map = ADEMap(m, n, rooms)
+            if cycle_bool:
+                G = ade_map.create_cyclic_graph(n_loops=1)
+            else:
+                G = ade_map.create_acyclic_graph()
+
+            G = ade_map.assign_types(G, ambiguity=[1])
+            G = ade_map.assign_images(G)
+
+            graph_metadata = ade_map.metadata(G)
+            result = generate_result_file(graph_metadata, G, cycle_bool=cycle_bool, ambiguity=abiguity, graph_type=graph_type)
+
+            if result:
                 f.write(str(result) + "\n")
                 generated_graphs+=1
     # Check if file is empty
@@ -76,6 +136,8 @@ def get_directions(node, direction_list, saved_node):
 
 def get_directions_main(node, direction_list, saved_node, graph_type):
 
+    print(f"Node: {node}, \nDirection list: {direction_list}, \nsaved_node: {saved_node}, \ngraph_type: {graph_type}")
+
     if saved_node != node:
         node = saved_node
     node_directions = None  
@@ -88,6 +150,7 @@ def get_directions_main(node, direction_list, saved_node, graph_type):
             if i[0]==node:
                 node_directions=i[1]
                 break
+    print(f"\n Node Directions : {node_directions}")
     return node_directions
 
 def string_available_directions(word_list):
