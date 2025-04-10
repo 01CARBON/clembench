@@ -36,3 +36,14 @@ If the guide responds otherwise, make a move to another room from the given opti
 Maybe have multiple turns on the same room with different tags...
 """
 
+
+"""
+Defining an instance
+
+1) Player A/ Player B
+Player A - Inside the world, Player B - Outside the world...
+
+Both are given an initial image, image for player B is fixed, image for Player A changes at every step
+
+
+"""
